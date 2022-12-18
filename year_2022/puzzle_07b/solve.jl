@@ -10,7 +10,7 @@ end
 function _get_flattened_dirs_file_size(dir_tree; flattened_dir=Dict(), parent_key="root")
     size = 0
     for (k,v) in dir_tree
-        #println("key: $k, value: $v ", parent_key)
+        println("key: $k, value: $v ", parent_key)
         flattened_key = parent_key * k
 
         if typeof(v) == Int
@@ -22,33 +22,21 @@ function _get_flattened_dirs_file_size(dir_tree; flattened_dir=Dict(), parent_ke
         end
         
     end 
-    #println("return ", size)
+    println("return ", size)
     return size, flattened_dir
 end
 
-function get_total_size(flattened_dir)
+function get_total_size_under(flattened_dir; max_size=100000)
     total_size = 0
     for (k,v) in flattened_dir
-        total_size += v
+        if v <= max_size
+            total_size += v
+        end
     end
     return total_size
 end
 
-function get_min_size_over(flattened_dir, min_size_delete)
-    current_size = 0
-    for (k,v) in flattened_dir
-        if current_size < min_size_delete
-            current_size = v 
-        end
-        if (v >= min_size_delete) && (v < current_size)
-            current_size = v
-        end
-    end
-    return current_size
-end
-
-
-function get_total_size_of_delete(filename, max_size=40000000)
+function get_total_size_of_directories(filename, max_size=100000)
     f = open(filename, "r")
     global current_directory = "root"
     global path = []
@@ -114,23 +102,17 @@ function get_total_size_of_delete(filename, max_size=40000000)
 
     println(flattened_dir)
 
-    #total_size = get_total_size(flattened_dir)
+    total_size = get_total_size_under(flattened_dir; max_size=100000)
 
-    min_size_delete = flattened_dir["rootroot"] - max_size
-    println("min size to delete ", min_size_delete)
-
-    size_delete = get_min_size_over(flattened_dir, min_size_delete)
-
-
-    return size_delete
+    return total_size
 end
 
-solution = get_total_size_of_delete("input.txt")
+solution = get_total_size_of_directories("input.txt")
 println(solution)
 
 
 function test_solution()
-    return get_total_size_of_delete("test_input.txt")
+    return get_total_size_of_directories("test_input.txt")
 end
 
 println("test solution result:")
