@@ -15,9 +15,9 @@ function get_overlap_score(filename)
         e1max = parse(Int, e1max)
         e2max = parse(Int, e2max)
 
-        if (e1min <= e2min) && (e1max >= e2max)
+        if (e1max >= e2min) && (e1min <= e2min)
             score +=1
-        elseif (e2min <= e1min) && (e2max >= e1max)
+        elseif (e2max >= e1min) && (e2min <= e1min)
             score +=1
         end
     end
