@@ -1,4 +1,12 @@
 
+function _maximum(arr, default=-1)
+    if length(arr) == 0
+        return default
+    else
+        return maximum(arr)
+    end
+end
+
 
 function get_visible_trees(filename)
     f = open(filename, "r")
@@ -14,22 +22,18 @@ function get_visible_trees(filename)
     end
     close(f)
     m = reduce(hcat, tmp)
-    #m = hcat(tmp)
-    #m = Matrix(m)
-    #println(typeof(m))
-    println(m)
 
     n_visible = 0
     for j = 1:size(m,2)
         for i = 1:size(m,1)
             val = m[i,j]
-            left = maximum(m[i, 1:(j-1)], -1)
-            right = max(m[i, (j+1):end])
-            top = max(m[1:(i-1), j])
-            bottom = max(m[(i+1):end, j])
+            left = _maximum(m[i, 1:(j-1)])
+            right = _maximum(m[i, (j+1):end])
+            top = _maximum(m[1:(i-1), j])
+            bottom = _maximum(m[(i+1):end, j])
 
-            println([left, right, top, bottom])
-            if (val > min([left, right, top, bottom]))
+            #println([left, right, top, bottom])
+            if (val > minimum([left, right, top, bottom]))
                 n_visible += 1
             end
         end
